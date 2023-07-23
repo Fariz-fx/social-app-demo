@@ -8,9 +8,19 @@
 
 The goal of this lesson is to deploy our completed project to Vercel.
 
-> Be sure to switch to the `10-lesson` branch in your local environment.
+> Be sure to switch to the `9-lesson` branch in your local environment.
 
-## Task 1: Create a Vercel Account
+## Task 1: Create a search index
+
+1. From the Atlas dashboard, select **Database** from the left menu.
+1. Click the **Browse Collections** button on your cluster.
+1. Select the **Search** tab.
+1. Click the **Create Index** button.
+1. Choose the **Visual Editor** and click **Next**.
+1. You can name your index or leave it set to `default`.
+    - If you alter the name, take note of the new name for later.
+1. Choose the `social_butterfly` database and `flutters` collection, then press **Next**.
+1. Press **Create Search Index**.
 
 If you don't already have a [Vercel account](https://vercel.com/signup), create one.
 
@@ -33,15 +43,76 @@ If you don't already have a [Vercel account](https://vercel.com/signup), create 
 
 ## Task 3: Update Auth0 settings
 
-1. In your Auth0 application, update the following fields under **Settings**:
-- Allowed Callback URLs: `http://localhost:3000/api/auth/callback, https://*.vercel.app/api/auth/callback`
-- Allowed Logout URLS: `http://localhost:3000, https://*.vercel.app, http://*.vercel.app`
-- Allowed Web Origins: `https://*.vercel.app`
+The term can be retrieved from the query parameter: `req.query.term`.
+
+The Data API endpoint for this route should be `/aggregate`.
+
+To use the search index, include a `pipeline` in the request body.
+
+> Here is an example pipeline using a search index:
+>
+> ```js
+> [
+>   {
+>     $search: {
+>       index: "default", // The name of the index
+>       text: {
+>         query: "Hello", // The search term
+>         path: {
+>           wildcard: "*", // The fields to search
+>         },
+>       },
+>     },
+>   },
+> ];
+> ```
+
+After the search pipeline stage, add a sort stage that sorts descending on the `postedAt` field.
+
+### Test
+
+Test your search functionality by running the application and using the search input in the header.
+
+Notice that the search results are very strict. You have to be exact with the search term.
+
+We can fix this by adding a `fuzzy` parameter to our search pipeline stage.
+
+<details>
+<summary>Show solution</summary>
+
+```js
+case "GET":
+  const term = req.query.term;
+  const readData = await fetch(`${baseUrl}/aggregate`, {
+    ...fetchOptions,
+    body: JSON.stringify({
+      ...fetchBody,
+      pipeline: [
+        {
+          $search: {
+            index: "default",
+            text: {
+              query: term,
+              path: {
+                wildcard: "*",
+              },
+              fuzzy: {}
+            },
+          },
+        },
+        { $sort: { postedAt: -1 } },
+      ],
+    }),
+  });
+  const readDataJson = await readData.json();
+  res.status(200).json(readDataJson.documents);
+  break;
+```
+
+</details>
 
 ---
 
 Great job! Your application is now deployed and you can open it from the **Overview** tab in Vercel or by navigating to your custom Vercel domain.
 
-## Bonus: Team Collaboration
-
-Team up with someone and browse to each other's deployed applications. Leave some flutters to let them know it's working.
+> Be sure to commit your branch changes and switch to the `10-lesson` branch in your local environment.
