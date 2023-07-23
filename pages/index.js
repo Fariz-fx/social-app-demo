@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar/Navbar";
 import Flutters from "../components/Flutters/Flutters";
 import CreateFlutter from "../components/Flutters/CreateFlutter";
 import HeaderSearch from "../components/Header/HeaderSearch";
+import Profile from "../components/Profile/Profile";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -41,8 +42,13 @@ export default function Home() {
       })}
     >
       <LoadingOverlay visible={isLoading} />
-      <CreateFlutter setFlutters={setFlutters} />
-      <Flutters flutters={flutters} setFlutters={setFlutters} />
+      {page === "Home" && (
+        <>
+          <CreateFlutter setFlutters={setFlutters} />
+          <Flutters flutters={flutters} setFlutters={setFlutters} />
+        </>
+      )}
+      {page === "Profile" && <Profile />}
     </AppShell>
   );
 }

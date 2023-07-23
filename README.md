@@ -1,12 +1,12 @@
-# Lesson 9
+# Lesson 10
 
-<- Back to [previous lesson](https://github.com/mongodb-developer/social-app-demo/tree/8-lesson)
+<- Back to [previous lesson](https://github.com/mongodb-developer/social-app-demo/tree/9-lesson)
 
 ---
 
 ## Goal
 
-The goal of this lesson is to enable search within MongoDB Atlas by creating a search index. We should be able to search for flutters by taking advantage of fuzzy searching.
+The goal of this lesson is to deploy our completed project to Vercel.
 
 > Be sure to switch to the `9-lesson` branch in your local environment.
 
@@ -22,13 +22,26 @@ The goal of this lesson is to enable search within MongoDB Atlas by creating a s
 1. Choose the `social_butterfly` database and `flutters` collection, then press **Next**.
 1. Press **Create Search Index**.
 
-## Task 2: Add Search `term` API endpoint
+If you don't already have a [Vercel account](https://vercel.com/signup), create one.
 
-Use the one of the other endpoint files as a starter to create `pages/api/flutter/[term].js`.
+## Task 2: Create a Vercel Project
 
-This route will receive the search term as a query parameter.
+1. From the Vercel dashboard, create a new project.
+1. Choose **Continue with GitHub**.
+1. Find the **social-app-demo** repository in the list and choose **Import**.
+1. Select **Next.js** as the framework.
+1. Under **Environment Variables**, add all of your environment variables from your [`.env.local`](./.env.local) file.
+1. Click **Deploy**.
+    - This initail deploy will not really do anything since the `main` branch does not contain our final code.
+1. Go back to the main dashboard and select your new project.
+    - Take note of your custom domain. (Example: `https://socialbutterfly.vercel.app`)
+1. From the **Settings** tab, click **Git**.
+1. Change the **Production Branch** to `10-lesson` and save.
+1. Navigate to the **Environment Variables** tab.
+1. Change `AUTH0_BASE_URL` to your custom Vercel domain noted earlier. 
+1. To redeploy, you'll need to make a new commit to the `10-lesson` branch. You can simply open the `README.md` file, add a space somewhere, and make a new commit.
 
-This route should get all flutters that match the search term.
+## Task 3: Update Auth0 settings
 
 The term can be retrieved from the query parameter: `req.query.term`.
 
@@ -100,6 +113,6 @@ case "GET":
 
 ---
 
-Great job! Let's move on to the [next lesson](https://github.com/mongodb-developer/social-app-demo/tree/10-lesson) ->
+Great job! Your application is now deployed and you can open it from the **Overview** tab in Vercel or by navigating to your custom Vercel domain.
 
 > Be sure to commit your branch changes and switch to the `10-lesson` branch in your local environment.

@@ -13,6 +13,7 @@ export default withApiAuthRequired(async function handler(req, res) {
 
     switch (req.method) {
       case "GET":
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         const readData = await fetch(`${baseUrl}/findOne`, {
           method: "POST",
           headers: {
@@ -28,6 +29,7 @@ export default withApiAuthRequired(async function handler(req, res) {
         });
 
         const readDataJson = await readData.json();
+        // console.log(readDataJson)
 
         if (!readDataJson.document.email) {
           await fetch(`${baseUrl}/updateOne`, {
@@ -58,7 +60,7 @@ export default withApiAuthRequired(async function handler(req, res) {
             name: user.name,
             picture: user.picture,
             nickname: user.nickname,
-          }
+          };
         }
 
         res.status(200).json(readDataJson.document);
@@ -84,7 +86,6 @@ export default withApiAuthRequired(async function handler(req, res) {
             },
           }),
         });
-
         const updateDataJson = await updateData.json();
         res.status(200).json(updateDataJson);
         break;
